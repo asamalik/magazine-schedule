@@ -40,10 +40,29 @@ def main():
 
     for post in scheduled_posts:
         date = datetime.date.fromisoformat(post["due_date"])
-        print("{date}: #{id} {title}".format(
+        
+        # Does it need edit?
+        if post["status"] == "queued" or post["status"] == "scheduled":
+            edit = "DONE"
+        else:
+            edit = "TBD"
+            if post["Editor"]:
+                edit = post["Editor"]
+
+        # Does it need an image?
+        if "needs image" not in post["tags"]:
+            image = "DONE"
+        else:
+            image = "TBD"
+            if post["Cover image designer"]:
+                image = post["Cover image designer"]
+
+        print("{date}: #{id} {title} (image: {image}, edit: {edit})".format(
             date=date.strftime("%a %d %b %Y"),
             id=post["ref"],
-            title=post["subject"]
+            title=post["subject"],
+            image=image,
+            edit=edit
         ))
 
 
