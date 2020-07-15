@@ -25,7 +25,7 @@ def get_scheduled_posts(data):
     for row in data:
         if row["due_date"]:
             date = datetime.date.fromisoformat(row["due_date"])
-            if date >= datetime.date.today():
+            if date > datetime.date.today():
                 scheduled_posts.append(row)
     
     scheduled_posts_sorted = sorted(scheduled_posts, key=lambda k: k["due_date"])
@@ -37,6 +37,8 @@ def main():
     data = load_data(data_url)
     
     scheduled_posts = get_scheduled_posts(data)
+
+    post_texts = []
 
     for post in scheduled_posts:
         date = datetime.date.fromisoformat(post["due_date"])
@@ -57,13 +59,19 @@ def main():
             if post["Cover image designer"]:
                 image = post["Cover image designer"]
 
-        print("{date}: #{id} {title} (image: {image}, edit: {edit})".format(
+        post_text = "{date}: #{id} {title} (image: {image}, edit: {edit})".format(
             date=date.strftime("%a %d %b %Y"),
             id=post["ref"],
             title=post["subject"],
             image=image,
             edit=edit
-        ))
+        )
+
+        post_texts.append(post_text)
+
+    print ("#proposed #agreed PUBLISHING SCHEDULE: {}".format(
+        " -- ".join(post_texts)
+    ))
 
 
 if __name__ == "__main__":
